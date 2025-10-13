@@ -1,0 +1,8 @@
+string,number | string | boolean
+配置名,数值
+ConstantName,Value
+TEAM_COLLECTION_INTERVAL,120
+TEAM_CHOICE_TIMEOUT,30
+EVENT_BLOCK_TAG,"""EventBlock"""
+EVENT_BLOCKS_FOLDER_NAME,"""EventBlocks"""
+INITIAL_TRIGGERED_EVENT_BLOCKS,2

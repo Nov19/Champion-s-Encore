@@ -1,0 +1,6 @@
+string,number,number,number,Color3,Enum.Material,number,number
+配置名,伤害值,减速值,眩晕时间,颜色,材质,透明度,引导时间
+Name,Damage,Slow,Stun,Color,Material,Transparency,ChannelDuration
+FireBlock,50,0,0,"Color3.fromRGB(255, 100, 100)",Enum.Material.Neon,0.3,1
+SlowBlock,10,0.8,0,"Color3.fromRGB(100, 100, 255)",Enum.Material.ForceField,0.5,0.7
+ShockBlock,20,0,0.15,"Color3.fromRGB(255, 255, 100)",Enum.Material.Neon,0.2,1.2
