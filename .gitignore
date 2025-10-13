@@ -39,3 +39,7 @@ luac.out
 *.x86_64
 *.hex
 
+# System Files
+*.DS_Store
+
+src/StarterPlayerScripts/UIReferences.lua
