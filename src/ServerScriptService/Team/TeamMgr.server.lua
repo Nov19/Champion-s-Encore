@@ -3,51 +3,43 @@
     Naming convention: ???
 ]]
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerStorage = game:GetService("ServerStorage")
 
 --[[
     Modules
-    Naming convention: ???Module
+    Naming convention: ???
 ]]
-local TeamManagerModule = require(ReplicatedStorage.Modules.Team)
-local CommunicationModule = require(ReplicatedStorage.Modules.Communication)
+local TeamManager = require(ReplicatedStorage.Modules.Team)
+local ConfigLoader = require(ReplicatedStorage.Modules.ConfigLoader)
+local Communication = require(ReplicatedStorage.Modules.Communication)
 
 --[[
     Tables
     Naming convention: Tab_???
 ]]
-local ServerConfig = require(ServerStorage.Configs.ServerConfigs)
+
+local ServerConfigs = ConfigLoader:RemapConfigs(ConfigLoader:GetConfig("ServerConfigs"), "ConstantName")
 
 --[[
     References & Parameters
 ]]
 -- Configuration
-local TEAM_COLLECTION_INTERVAL = 120 -- 2 minutes in seconds
-local TEAM_CHOICE_TIMEOUT = 30 -- 30 seconds timeout for team choice responses
+local TEAM_CHOICE_TIMEOUT = ServerConfigs.TEAM_CHOICE_TIMEOUT.Value -- 30 seconds timeout for team choice responses
 
 -- State management
 local playerTeamChoices = {} -- Stores player team choices
-local teamCollectionTimer = 0
 local isCollectingTeamChoices = false
+local isStartARunExecuting = false -- Tracks if StartARun is currently executing
 
 -- Event names for communication
 local TEAM_CHOICE_REQUEST = "TeamChoiceRequest"
 local TEAM_CHOICE_RESPONSE = "TeamChoiceResponse"
 local TEAM_ASSIGNMENT_UPDATE = "TeamAssignmentUpdate"
+local GAME_COMPLETED = "GameCompleted"
 
 --[[
-    Functions
+	Local functions
 ]]
--- Initialize communication events
-local function InitializeEvents()
-	-- Server-side event handlers
-	CommunicationModule.OnServerEvent(TEAM_CHOICE_RESPONSE, function(player, teamChoice)
-		HandleTeamChoiceResponse(player, teamChoice)
-	end)
-end
-
 -- Handle team choice response from client
 function HandleTeamChoiceResponse(player, teamChoice)
 	if not player or not player.Parent then
@@ -57,7 +49,7 @@ function HandleTeamChoiceResponse(player, teamChoice)
 	-- Validate team choice
 	if type(teamChoice) == "string" and teamChoice ~= "" then
 		-- Check if the team exists
-		local team = TeamManagerModule:GetTeamByName(teamChoice)
+		local team = TeamManager:GetTeamByName(teamChoice)
 		if team then
 			playerTeamChoices[player.UserId] = {
 				player = player,
@@ -79,31 +71,20 @@ function HandleTeamChoiceResponse(player, teamChoice)
 	end
 end
 
--- Request team choices from all players
-function RequestTeamChoices()
-	if isCollectingTeamChoices then
-		return -- Already collecting
-	end
-
-	isCollectingTeamChoices = true
-	playerTeamChoices = {} -- Clear previous choices
-
-	print("Requesting team choices from all players...")
-
-	-- Fire event to all clients requesting team choices
-	CommunicationModule.FireAllClients(TEAM_CHOICE_REQUEST)
-
-	-- Set timeout for team choice collection
-	spawn(function()
-		wait(TEAM_CHOICE_TIMEOUT)
-		ProcessTeamChoices()
+-- Initialize communication events
+local function InitializeEvents()
+	-- Server-side event handlers
+	Communication.OnServerEvent(TEAM_CHOICE_RESPONSE, function(player, teamChoice)
+		HandleTeamChoiceResponse(player, teamChoice)
 	end)
 end
 
+--[[
+    Functions
+]]
+
 -- Process collected team choices and assign teams
 function ProcessTeamChoices()
-	print("Processing team choices...")
-
 	local playersProcessed = 0
 	local playersAssigned = 0
 	local playersNeutral = 0
@@ -118,9 +99,9 @@ function ProcessTeamChoices()
 			-- Player made a choice
 			if choice.teamChoice then
 				-- Assign to chosen team
-				local team = TeamManagerModule:GetTeamByName(choice.teamChoice)
+				local team = TeamManager:GetTeamByName(choice.teamChoice)
 				if team then
-					TeamManagerModule:SetPlayerTeam(player, team)
+					TeamManager:SetPlayerTeam(player, team)
 					playersAssigned = playersAssigned + 1
 					print("Assigned " .. player.Name .. " to team: " .. choice.teamChoice)
 				else
@@ -160,7 +141,7 @@ function ProcessTeamChoices()
 	)
 
 	-- Notify clients about team assignment update
-	CommunicationModule.FireAllClients(TEAM_ASSIGNMENT_UPDATE, {
+	Communication.FireAllClients(TEAM_ASSIGNMENT_UPDATE, {
 		playersProcessed = playersProcessed,
 		playersAssigned = playersAssigned,
 		playersNeutral = playersNeutral,
@@ -169,13 +150,40 @@ function ProcessTeamChoices()
 	isCollectingTeamChoices = false
 end
 
+-- Request team choices from all players
+function RequestTeamChoices()
+	if isCollectingTeamChoices then
+		return -- Already collecting
+	end
+
+	isCollectingTeamChoices = true
+	playerTeamChoices = {} -- Clear previous choices
+
+	print("Requesting team choices from all players...")
+
+	-- Fire event to all clients requesting team choices
+	Communication.FireAllClients(TEAM_CHOICE_REQUEST)
+
+	-- Set timeout for team choice collection
+	task.spawn(function()
+		task.wait(TEAM_CHOICE_TIMEOUT)
+		ProcessTeamChoices()
+	end)
+end
+
+-- Invoke StartARun BindableFunction and wait for completion
+function InvokeStartARun()
+	print("Starting StartARun...")
+
+	Communication.Invoke("StartARun")
+
+	print("StartARun finished")
+end
+
 -- Handle player joining
 function OnPlayerAdded(player)
-	print("Player joined: " .. player.Name)
-
 	-- Set new player to neutral initially
 	player.Neutral = true
-	print("Set " .. player.Name .. " to neutral (new player)")
 
 	-- Clean up any old choices for this player (in case of rejoin)
 	playerTeamChoices[player.UserId] = nil
@@ -183,20 +191,19 @@ end
 
 -- Handle player leaving
 function OnPlayerRemoving(player)
-	print("Player left: " .. player.Name)
-
 	-- Clean up player's team choice
 	playerTeamChoices[player.UserId] = nil
 end
 
--- Main update loop for periodic team collection
-function Update(deltaTime)
-	teamCollectionTimer = teamCollectionTimer + deltaTime
+-- Handle game completion and start new team collection cycle
+function OnGameCompleted()
+	print("Game completed! Starting new team collection cycle...")
 
-	if teamCollectionTimer >= TEAM_COLLECTION_INTERVAL then
-		teamCollectionTimer = 0
-		RequestTeamChoices()
-	end
+	-- Start the team collection process
+	RequestTeamChoices()
+
+	-- Invoke StartARun BindableFunction after team processing is complete
+	InvokeStartARun() -- FIXME Only one run started...
 end
 
 --[[
@@ -210,18 +217,21 @@ InitializeEvents()
 Players.PlayerAdded:Connect(OnPlayerAdded)
 Players.PlayerRemoving:Connect(OnPlayerRemoving)
 
--- Start the update loop
-RunService.Heartbeat:Connect(Update)
+-- Connect to game completion event
+Communication.Event(GAME_COMPLETED, function()
+	print("Game completed!!!!")
+	OnGameCompleted()
+end)
 
 --[[
     Code execution
 ]]
--- Initialize the team management system
-print("Initializing Team Management System...")
 
 -- Set existing players to neutral
 for _, player in pairs(Players:GetPlayers()) do
 	OnPlayerAdded(player)
 end
 
-print("Team Management System initialized successfully")
+-- Start the initial team collection cycle
+RequestTeamChoices()
+InvokeStartARun()
