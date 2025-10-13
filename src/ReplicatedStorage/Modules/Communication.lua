@@ -7,9 +7,13 @@ if not RemoteFolder then
 	RemoteFolder.Parent = ReplicatedStorage
 end
 local FolderList = {
-	"RemoteEvent","UnreliableRemoteEvent","RemoteFunction","BindableEvent","BindableFunction",
+	"RemoteEvent",
+	"UnreliableRemoteEvent",
+	"RemoteFunction",
+	"BindableEvent",
+	"BindableFunction",
 }
-for _,folderName in pairs(FolderList) do
+for _, folderName in pairs(FolderList) do
 	local folder = RemoteFolder:FindFirstChild(folderName)
 	if not folder then
 		folder = Instance.new("Folder")
@@ -34,14 +38,14 @@ local function IsCallable(value)
 end
 
 local function DuplicateError(name)
-	return "There are instances with duplicate names and incorrect types!!!error name:"..name
+	return "There are instances with duplicate names and incorrect types!!!error name:" .. name
 end
 
 local function ClientError(name)
-	return "Please declare the instance on the server first!!!error name:"..name
+	return "Please declare the instance on the server first!!!error name:" .. name
 end
 
-local function GetRemoteEvent(name:string)
+local function GetRemoteEvent(name: string)
 	local remote = RemoteFolder.RemoteEvent:FindFirstChild(name)
 	if RunService:IsServer() then
 		if not remote then
@@ -59,7 +63,7 @@ local function GetRemoteEvent(name:string)
 	end
 end
 
-local function GetUnreliableRemoteEvent(name:string)
+local function GetUnreliableRemoteEvent(name: string)
 	local remote = RemoteFolder.UnreliableRemoteEvent:FindFirstChild(name)
 	if RunService:IsServer() then
 		if not remote then
@@ -77,7 +81,7 @@ local function GetUnreliableRemoteEvent(name:string)
 	end
 end
 
-local function GetRemoteFunction(name:string)
+local function GetRemoteFunction(name: string)
 	local remote = RemoteFolder.RemoteFunction:FindFirstChild(name)
 	if RunService:IsServer() then
 		if not remote then
@@ -95,7 +99,7 @@ local function GetRemoteFunction(name:string)
 	end
 end
 
-local function GetBindableEvent(name:string)
+local function GetBindableEvent(name: string)
 	local remote = RemoteFolder.BindableEvent:FindFirstChild(name)
 	if RunService:IsServer() then
 		if not remote then
@@ -113,7 +117,7 @@ local function GetBindableEvent(name:string)
 	end
 end
 
-local function GetBindableFunction(name:string)
+local function GetBindableFunction(name: string)
 	local remote = RemoteFolder.BindableFunction:FindFirstChild(name)
 	if RunService:IsServer() then
 		if not remote then
@@ -133,28 +137,28 @@ end
 
 --RemoteEvent
 ------------------------------------------------------------------------------------------------------------------------
-local function FireServer(name:string,...)
+local function FireServer(name: string, ...)
 	local event = GetRemoteEvent(name)
 	event:FireServer(...)
 end
 
-local function FireClient(name:string,...)
+local function FireClient(name: string, ...)
 	local event = GetRemoteEvent(name)
 	event:FireClient(...)
 end
 
-local function FireAllClients(name:string,...)
+local function FireAllClients(name: string, ...)
 	local event = GetRemoteEvent(name)
 	event:FireAllClients(...)
 end
 
-local function OnClientEvent(name:string,callback)
+local function OnClientEvent(name: string, callback)
 	assert(IsCallable(callback), "callback must be a function")
 	local event = GetRemoteEvent(name)
 	event.OnClientEvent:Connect(callback)
 end
 
-local function OnServerEvent(name:string,callback)
+local function OnServerEvent(name: string, callback)
 	assert(IsCallable(callback), "callback must be a function")
 	local event = GetRemoteEvent(name)
 	event.OnServerEvent:Connect(callback)
@@ -163,28 +167,28 @@ end
 
 --UnreliableRemoteEvent
 ------------------------------------------------------------------------------------------------------------------------
-local function UnreliableFireServer(name:string,...)
+local function UnreliableFireServer(name: string, ...)
 	local event = GetUnreliableRemoteEvent(name)
 	event:FireServer(...)
 end
 
-local function UnreliableFireClient(name:string,...)
+local function UnreliableFireClient(name: string, ...)
 	local event = GetUnreliableRemoteEvent(name)
 	event:FireClient(...)
 end
 
-local function UnreliableFireAllClients(name:string,...)
+local function UnreliableFireAllClients(name: string, ...)
 	local event = GetUnreliableRemoteEvent(name)
 	event:FireAllClients(...)
 end
 
-local function UnreliableOnClientEvent(name:string,callback)
+local function UnreliableOnClientEvent(name: string, callback)
 	assert(IsCallable(callback), "callback must be a function")
 	local event = GetUnreliableRemoteEvent(name)
 	event.OnClientEvent:Connect(callback)
 end
 
-local function UnreliableOnServerEvent(name:string,callback)
+local function UnreliableOnServerEvent(name: string, callback)
 	assert(IsCallable(callback), "callback must be a function")
 	local event = GetUnreliableRemoteEvent(name)
 	event.OnServerEvent:Connect(callback)
@@ -193,23 +197,23 @@ end
 
 --RemoteFunction
 ------------------------------------------------------------------------------------------------------------------------
-local function InvokeServer(name:string,...)
+local function InvokeServer(name: string, ...)
 	local event = GetRemoteFunction(name)
 	return event:InvokeServer(...)
 end
 
-local function InvokeClient(name:string,...)
+local function InvokeClient(name: string, ...)
 	local event = GetRemoteFunction(name)
 	return event:InvokeClient(...)
 end
 
-local function OnClientInvoke(name:string,callback)
+local function OnClientInvoke(name: string, callback)
 	assert(IsCallable(callback), "callback must be a function")
 	local event = GetRemoteFunction(name)
 	event.OnClientInvoke = callback
 end
 
-local function OnServerInvoke(name:string,callback)
+local function OnServerInvoke(name: string, callback)
 	assert(IsCallable(callback), "callback must be a function")
 	local event = GetRemoteFunction(name)
 	event.OnServerInvoke = callback
@@ -218,12 +222,12 @@ end
 
 --BindableEvent
 ------------------------------------------------------------------------------------------------------------------------
-local function Fire(name:string,...)
+local function Fire(name: string, ...)
 	local event = GetBindableEvent(name)
 	event:Fire(...)
 end
 
-local function Event(name:string,callback)
+local function Event(name: string, callback)
 	assert(IsCallable(callback), "callback must be a function")
 	local event = GetBindableEvent(name)
 	event.Event:Connect(callback)
@@ -232,12 +236,12 @@ end
 
 --BindableFunction
 ------------------------------------------------------------------------------------------------------------------------
-local function Invoke(name:string,...)
+local function Invoke(name: string, ...)
 	local event = GetBindableFunction(name)
 	return event:Invoke(...)
 end
 
-local function OnInvoke(name:string,callback)
+local function OnInvoke(name: string, callback)
 	assert(IsCallable(callback), "callback must be a function")
 	local event = GetBindableFunction(name)
 	event.OnInvoke = callback
