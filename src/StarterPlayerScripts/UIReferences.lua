@@ -2,8 +2,11 @@
     Services
     Naming convention: Ser_???
 ]]
+
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local PlayerGui = Players.LocalPlayer.PlayerGui -- This is the prerequisite for the UIReferences
+
 --[[
     Modules
     Naming convention: ???Module
@@ -34,6 +37,14 @@ local UIReference = {}
     Tables
     Naming convention: Tab_???
 ]]
+
+UIReference.Guis = {
+	LockOnUI = PlayerGui:WaitForChild("LockOnUI"),
+}
+
+UIReference.LockOnUI = {
+	LockOnBtn = UIReference.Guis.LockOnUI:WaitForChild("LockOnBtn"),
+}
 
 --[[
     References & Parameters
