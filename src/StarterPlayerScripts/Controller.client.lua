@@ -44,7 +44,7 @@ local camera = workspace.CurrentCamera
 ]]
 
 -- TODO: Lock on to the target
-UIReferences.LockOnUI.LockOnBtn.Activated:Connect(function()
+UIReferences.ControllerUI.LockOnBtn.Activated:Connect(function()
 	if isLockingOn then
 		isLockingOn = false
 		CameraLockOn:CameraFollow(Players.LocalPlayer.Character, nil, camera)
