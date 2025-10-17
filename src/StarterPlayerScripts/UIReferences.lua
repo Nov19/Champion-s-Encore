@@ -39,11 +39,16 @@ local UIReference = {}
 ]]
 
 UIReference.Guis = {
-	LockOnUI = PlayerGui:WaitForChild("LockOnUI"),
+	ControllerUI = PlayerGui:WaitForChild("ControllerUI"),
+	StartMenuUI = PlayerGui:WaitForChild("StartMenuUI"),
 }
 
-UIReference.LockOnUI = {
-	LockOnBtn = UIReference.Guis.LockOnUI:WaitForChild("LockOnBtn"),
+UIReference.ControllerUI = {
+	LockOnBtn = UIReference.Guis.ControllerUI:WaitForChild("LockOnBtn"),
+}
+
+UIReference.StartMenuUI = {
+	PlayBtn = UIReference.Guis.StartMenuUI:WaitForChild("PlayBtn"),
 }
 
 --[[
