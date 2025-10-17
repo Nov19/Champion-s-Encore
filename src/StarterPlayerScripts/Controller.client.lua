@@ -4,6 +4,7 @@
 ]]
 
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 
 --[[
     Modules
@@ -37,7 +38,12 @@ local camera = workspace.CurrentCamera
     Functions
 ]]
 
-local function HideDefaultJumpButton()
+local function AutoHideDefaultJumpButton()
+	-- The function only works for touch devices
+	if not UserInputService.TouchEnabled then
+		return
+	end
+
 	local jumpButton = Players.LocalPlayer
 		:WaitForChild("PlayerGui")
 		:WaitForChild("TouchGui")
@@ -73,4 +79,4 @@ end)
 --[[
     Code execution
 ]]
-HideDefaultJumpButton()
+AutoHideDefaultJumpButton()
