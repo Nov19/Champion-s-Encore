@@ -38,6 +38,7 @@ local camera = workspace.CurrentCamera
     Functions
 ]]
 
+--- Automatically hide the default jump button for touch devices
 local function AutoHideDefaultJumpButton()
 	-- The function only works for touch devices
 	if not UserInputService.TouchEnabled then
@@ -54,6 +55,22 @@ local function AutoHideDefaultJumpButton()
 	jumpButton:GetPropertyChangedSignal("Visible"):Connect(function()
 		jumpButton.Visible = false
 	end)
+end
+
+--- Initialize the controller based on the device type
+local function InitializeController()
+	AutoHideDefaultJumpButton()
+
+	-- If the device is a touch device, show the controller UI
+	if UserInputService.TouchEnabled then
+		UIReferences.Guis.ControllerUI.Enabled = true
+
+		-- TODO Show the touch binding hints
+	else
+		UIReferences.Guis.ControllerUI.Enabled = false
+
+		-- TODO Show the key binding hints for keyboard and mouse devices
+	end
 end
 
 --[[
@@ -79,4 +96,4 @@ end)
 --[[
     Code execution
 ]]
-AutoHideDefaultJumpButton()
+InitializeController()
