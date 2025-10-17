@@ -4,7 +4,6 @@
 ]]
 
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 
 --[[
     Modules
@@ -38,6 +37,19 @@ local camera = workspace.CurrentCamera
     Functions
 ]]
 
+local function HideDefaultJumpButton()
+	local jumpButton = Players.LocalPlayer
+		:WaitForChild("PlayerGui")
+		:WaitForChild("TouchGui")
+		:WaitForChild("TouchControlFrame")
+		:WaitForChild("JumpButton")
+	jumpButton.Visible = false
+
+	jumpButton:GetPropertyChangedSignal("Visible"):Connect(function()
+		jumpButton.Visible = false
+	end)
+end
+
 --[[
     Event connections
     Conventional order: Remote events -> Bindable events -> Remote functions -> Bindable functions
@@ -61,3 +73,4 @@ end)
 --[[
     Code execution
 ]]
+HideDefaultJumpButton()
