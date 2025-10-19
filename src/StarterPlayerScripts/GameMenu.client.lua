@@ -14,7 +14,6 @@ local TweenService = game:GetService("TweenService")
 
 local UIReferences = require(script.Parent.UIReferences)
 local Communication = require(ReplicatedStorage.Modules.Communication)
-local ModelHelper = require(ReplicatedStorage.Modules.Helpers.ModelHelper)
 
 --[[
     Tables
