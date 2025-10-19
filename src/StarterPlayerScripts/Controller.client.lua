@@ -2,6 +2,7 @@
     Services
     Naming convention: ???
 ]]
+local ContextActionService = game:GetService("ContextActionService")
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -40,6 +41,45 @@ local currentCamera = workspace.CurrentCamera
     Functions
 ]]
 
+local function ActivateKeyBindingUI()
+	local function handleSpaceAction(actionName, inputState, inputObject)
+		if inputState == Enum.UserInputState.Begin then
+			UIReferences.PCKeyBindingUI.JumpKeyBind.ImageLabel.ImageTransparency = 0
+			UIReferences.PCKeyBindingUI.JumpKeyBind.TextLabel.TextTransparency = 0
+		end
+		if inputState == Enum.UserInputState.End then
+			UIReferences.PCKeyBindingUI.JumpKeyBind.ImageLabel.ImageTransparency = 0.5
+			UIReferences.PCKeyBindingUI.JumpKeyBind.TextLabel.TextTransparency = 0.5
+		end
+	end
+
+	local function handleLMBAction(actionName, inputState, inputObject)
+		if inputState == Enum.UserInputState.Begin then
+			UIReferences.PCKeyBindingUI.AttackKeyBind.ImageLabel.ImageTransparency = 0
+			UIReferences.PCKeyBindingUI.AttackKeyBind.TextLabel.TextTransparency = 0
+		end
+		if inputState == Enum.UserInputState.End then
+			UIReferences.PCKeyBindingUI.AttackKeyBind.ImageLabel.ImageTransparency = 0.5
+			UIReferences.PCKeyBindingUI.AttackKeyBind.TextLabel.TextTransparency = 0.5
+		end
+	end
+
+	local function handleRMBAction(actionName, inputState, inputObject)
+		if inputState == Enum.UserInputState.Begin then
+			UIReferences.PCKeyBindingUI.LockOnKeyBind.ImageLabel.ImageTransparency = 0
+			UIReferences.PCKeyBindingUI.LockOnKeyBind.TextLabel.TextTransparency = 0
+		end
+		if inputState == Enum.UserInputState.End then
+			UIReferences.PCKeyBindingUI.LockOnKeyBind.ImageLabel.ImageTransparency = 0.5
+			UIReferences.PCKeyBindingUI.LockOnKeyBind.TextLabel.TextTransparency = 0.5
+		end
+	end
+
+	ContextActionService:BindAction("SpaceAction", handleSpaceAction, false, Enum.KeyCode.Space)
+	ContextActionService:BindAction("LMBAction", handleLMBAction, false, Enum.UserInputType.MouseButton1)
+	ContextActionService:BindAction("RMBAction", handleRMBAction, false, Enum.UserInputType.MouseButton2)
+end
+
 --- Automatically hide the default jump button for touch devices
 local function AutoHideDefaultJumpButton()
 	-- The function only works for touch devices
@@ -69,6 +109,9 @@ local function InitializeController()
 		-- else, show the key binding UI
 		UIReferences.Guis.PCKeyBindingUI.Enabled = true
 		UIReferences.Guis.TouchControllerUI.Enabled = false
+
+		-- If the user is on a PC, activate the UI animations
+		ActivateKeyBindingUI()
 	end
 end
 
