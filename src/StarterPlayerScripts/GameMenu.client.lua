@@ -40,11 +40,16 @@ local startMenuCameraCFrame = workspace:WaitForChild("StartMenuCameraPart").CFra
 ]]
 
 local function OnGameLoaded()
+	local blur = Lighting:FindFirstChild("Blur")
+
 	Players.LocalPlayer.Character.Parent = nil -- Hide the player's character until the game starts
 
 	-- Set the camera to Scriptable
 	currentCamera.CameraType = Enum.CameraType.Scriptable
 	currentCamera.CFrame = startMenuCameraCFrame
+
+	blur.Size = DEFAULT_BLUR_SIZE
+	blur.Enabled = true
 end
 
 --[[
