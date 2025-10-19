@@ -39,16 +39,25 @@ local UIReference = {}
 ]]
 
 UIReference.Guis = {
-	ControllerUI = PlayerGui:WaitForChild("ControllerUI"),
+	TouchControllerUI = PlayerGui:WaitForChild("TouchControllerUI"),
 	StartMenuUI = PlayerGui:WaitForChild("StartMenuUI"),
+	PCKeyBindingUI = PlayerGui:WaitForChild("PCKeyBindingUI"),
 }
 
-UIReference.ControllerUI = {
-	LockOnBtn = UIReference.Guis.ControllerUI:WaitForChild("LockOnBtn"),
+UIReference.TouchControllerUI = {
+	LockOnBtn = UIReference.Guis.TouchControllerUI:WaitForChild("LockOnBtn"),
+	AttackBtn = UIReference.Guis.TouchControllerUI:WaitForChild("AttackBtn"),
+	JumpBtn = UIReference.Guis.TouchControllerUI:WaitForChild("JumpBtn"),
 }
 
 UIReference.StartMenuUI = {
 	PlayBtn = UIReference.Guis.StartMenuUI:WaitForChild("PlayBtn"),
+}
+
+UIReference.PCKeyBindingUI = {
+	JumpKeyBind = UIReference.Guis.PCKeyBindingUI:WaitForChild("JumpKeyBind"),
+	AttackKeyBind = UIReference.Guis.PCKeyBindingUI:WaitForChild("AttackKeyBind"),
+	LockOnKeyBind = UIReference.Guis.PCKeyBindingUI:WaitForChild("LockOnKeyBind"),
 }
 
 --[[
