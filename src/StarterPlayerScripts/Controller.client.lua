@@ -5,6 +5,7 @@
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 --[[
     Modules
@@ -12,7 +13,8 @@ local UserInputService = game:GetService("UserInputService")
 ]]
 
 local UIReferences = require(script.Parent.UIReferences)
-local CameraLockOn = require(game.ReplicatedStorage.Modules.CameraLockOn)
+local Camera = require(ReplicatedStorage.Modules.Camera)
+local Communication = require(ReplicatedStorage.Modules.Communication)
 
 --[[
     Tables
@@ -28,7 +30,7 @@ local CameraLockOn = require(game.ReplicatedStorage.Modules.CameraLockOn)
 local isFindingClosestTarget = false
 local isLockingOn = false
 
-local camera = workspace.CurrentCamera
+local currentCamera = workspace.CurrentCamera
 
 --[[
     Local functions
@@ -59,41 +61,42 @@ end
 
 --- Initialize the controller based on the device type
 local function InitializeController()
-	AutoHideDefaultJumpButton()
-
-	-- If the device is a touch device, show the controller UI
 	if UserInputService.TouchEnabled then
-		UIReferences.Guis.ControllerUI.Enabled = true
-
-		-- TODO Show the touch binding hints
+		-- If the device is a touch device, show the controller UI
+		UIReferences.Guis.TouchControllerUI.Enabled = true
+		UIReferences.Guis.PCKeyBindingUI.Enabled = false
 	else
-		UIReferences.Guis.ControllerUI.Enabled = false
-
-		-- TODO Show the key binding hints for keyboard and mouse devices
+		-- else, show the key binding UI
+		UIReferences.Guis.PCKeyBindingUI.Enabled = true
+		UIReferences.Guis.TouchControllerUI.Enabled = false
 	end
 end
 
---[[
+--[[ 
     Event connections
     Conventional order: Remote events -> Bindable events -> Remote functions -> Bindable functions
 ]]
 
 -- TODO: Lock on to the target
-UIReferences.ControllerUI.LockOnBtn.Activated:Connect(function()
+UIReferences.TouchControllerUI.LockOnBtn.Activated:Connect(function()
 	if isLockingOn then
 		isLockingOn = false
-		CameraLockOn:CameraFollow(Players.LocalPlayer.Character, nil, camera)
+		Camera:CameraFollow(Players.LocalPlayer.Character, nil, currentCamera)
 	else
 		isLockingOn = true
-		CameraLockOn:CameraFollow(
+		Camera:CameraFollow(
 			Players.LocalPlayer.Character,
-			CameraLockOn:GetClosestTarget(isFindingClosestTarget, camera),
-			camera
+			Camera:GetClosestTarget(isFindingClosestTarget, currentCamera),
+			currentCamera
 		)
 	end
+end)
+
+Communication.Event("PlayBtnActivated", function()
+	InitializeController()
 end)
 
 --[[
     Code execution
 ]]
-InitializeController()
+AutoHideDefaultJumpButton()
