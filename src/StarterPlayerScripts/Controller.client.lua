@@ -51,6 +51,7 @@ local function ActivateKeyBindingUI()
 			UIReferences.PCKeyBindingUI.JumpKeyBind.ImageLabel.ImageTransparency = 0.5
 			UIReferences.PCKeyBindingUI.JumpKeyBind.TextLabel.TextTransparency = 0.5
 		end
+		return Enum.ContextActionResult.Pass
 	end
 
 	local function handleLMBAction(actionName, inputState, inputObject)
@@ -62,6 +63,7 @@ local function ActivateKeyBindingUI()
 			UIReferences.PCKeyBindingUI.AttackKeyBind.ImageLabel.ImageTransparency = 0.5
 			UIReferences.PCKeyBindingUI.AttackKeyBind.TextLabel.TextTransparency = 0.5
 		end
+		return Enum.ContextActionResult.Pass
 	end
 
 	local function handleRMBAction(actionName, inputState, inputObject)
@@ -73,6 +75,7 @@ local function ActivateKeyBindingUI()
 			UIReferences.PCKeyBindingUI.LockOnKeyBind.ImageLabel.ImageTransparency = 0.5
 			UIReferences.PCKeyBindingUI.LockOnKeyBind.TextLabel.TextTransparency = 0.5
 		end
+		return Enum.ContextActionResult.Pass
 	end
 
 	ContextActionService:BindAction("SpaceAction", handleSpaceAction, false, Enum.KeyCode.Space)
