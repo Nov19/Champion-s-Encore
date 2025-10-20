@@ -130,7 +130,7 @@ function CM:GetClosestTarget(isFindingClosestTarget, camera)
 	end
 
 	if isFindingClosestTarget then
-		-- TODO Find the closest target
+		-- TODO Find the closest target to the player's character
 		warn("Not implemented yet")
 	else
 		-- Find the closest target to the center of the viewport
