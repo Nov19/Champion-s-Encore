@@ -26,12 +26,17 @@ local Communication = require(ReplicatedStorage.Modules.Communication)
     References & Parameters
 ]]
 
+local ATTACK_CD = 1.0
+
 -- If true, the camera is finding the closest target.
 -- If false, the camera is finding the closest target to the center of the viewport.
 local isFindingClosestTarget = false
 local isLockingOn = false
+local isAttacking = false
 
 local currentCamera = workspace.CurrentCamera
+
+local lastAttackTime = 0
 
 --[[
     Local functions
@@ -41,6 +46,7 @@ local currentCamera = workspace.CurrentCamera
     Functions
 ]]
 
+--- Activate the key binding UI
 local function ActivateKeyBindingUI()
 	local function handleSpaceAction(actionName, inputState, inputObject)
 		if inputState == Enum.UserInputState.Begin then
@@ -118,6 +124,34 @@ local function InitializeController()
 	end
 end
 
+local function Attack(actionName, inputState, inputObject)
+	-- TODO Change this to a press and release action. Exp: pressed -> while loop
+	if inputState == Enum.UserInputState.Begin then
+		isAttacking = true
+		local now = os.clock()
+
+		if now - lastAttackTime >= ATTACK_CD then
+			lastAttackTime = now
+			Communication.Fire("GlobalAnimation", actionName)
+		end
+
+		task.spawn(function()
+			while isAttacking do
+				if os.clock() - lastAttackTime >= ATTACK_CD then
+					lastAttackTime = os.clock()
+					Communication.Fire("GlobalAnimation", actionName)
+				end
+				task.wait(0.05)
+			end
+		end)
+	end
+	if inputState == Enum.UserInputState.End then
+		isAttacking = false
+	end
+
+	return Enum.ContextActionResult.Pass
+end
+
 --[[ 
     Event connections
     Conventional order: Remote events -> Bindable events -> Remote functions -> Bindable functions
@@ -137,10 +171,15 @@ UIReferences.TouchControllerUI.LockOnBtn.Activated:Connect(function()
 		)
 	end
 end)
+UIReferences.TouchControllerUI.AttackBtn.Activated:Connect(function()
+	Attack("Attack", Enum.UserInputState.Begin)
+end)
 
 Communication.Event("PlayBtnActivated", function()
 	InitializeController()
 end)
+
+ContextActionService:BindAction("Attack", Attack, false, Enum.UserInputType.MouseButton1)
 
 --[[
     Code execution
