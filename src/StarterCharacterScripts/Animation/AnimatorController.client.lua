@@ -1,86 +1,57 @@
 --[[
-    Services
-    Naming convention: ???
+	Services
+	Naming convention: ???
 ]]
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 --[[
-    Modules
-    Naming convention: ???
+	Modules
+	Naming convention: ???
 ]]
 
 local Communication = require(ReplicatedStorage.Modules.Communication)
-local Animations = require(ReplicatedStorage.Assets.Animations)
+local PlayerConfigs = require(ReplicatedStorage.Modules.PlayerConfigs)
 
 --[[
-    Tables
-    Naming convention: ???
+	Tables
+	Naming convention: ???
 ]]
 
-local Loaded_Tracks = {}
+local Behaviors = require(ReplicatedStorage.Assets.Behaviors)
 
 --[[
-    References & Parameters
+	References & Parameters
 ]]
 
-local player = Players.LocalPlayer
-local character = player.Character
-local humanoid = character:WaitForChild("Humanoid")
-local animator = humanoid:WaitForChild("Animator")
+local configs = PlayerConfigs:GetConfigFor(Players.LocalPlayer)
 
 --[[
-    Local functions
+	Local functions
 ]]
 
---- Play the animation on the target's character
----@param animationId number The animation ID for the target to play
-local function PlayAnimation(animationId: number)
-	print("Animation played!")
+--[[
+	Functions
+]]
 
-	local track = Loaded_Tracks[animationId]
-	if not track then
-		local anim = Instance.new("Animation")
-		anim.AnimationId = "rbxassetid://" .. animationId
-		track = animator:LoadAnimation(anim)
-		track.Priority = Enum.AnimationPriority.Action
+--[[
+	Event connections
+	Conventional order: Remote events -> Bindable events -> Remote functions -> Bindable functions
+]]
 
-		Loaded_Tracks[animationId] = track
+Communication.Event("Attack", function()
+	local playerAtkAnim = Behaviors[configs.Animations.Attack]
+	if not playerAtkAnim then
+		warn("Communication.Event() Attack - The attack animation saved in player's config is not found!")
 	end
 
-	track:Play()
+	playerAtkAnim:Execute(Players.LocalPlayer.Character)
+end)
+
+--[[
+	Code execution
+]]
+for _, behavior in Behaviors do
+	behavior:InitializeHitbox(Players.LocalPlayer.Character)
 end
-
---[[
-    Functions
-]]
-
---[[
-    Event connections
-    Conventional order: Remote events -> Bindable events -> Remote functions -> Bindable functions
-]]
-
--- - This event plays sends the animation info to the server, and the server will distribute the info to clients.
-Communication.Event("GlobalAnimation", function(animationName)
-	local animationId = Animations:GetAnimationIdByName(animationName)
-
-	PlayAnimation(animationId)
-
-	Communication.FireServer("SyncAnimation", animationId)
-end)
-
--- - This event player the animation locally, without sending any infomation to the server.
-Communication.Event("LocalAnimation", function(animationName)
-	local animationId = Animations:GetAnimationIdByName(animationName)
-
-	-- TODO Play local animations
-end)
-
-Communication.OnClientEvent("SyncAnimation", function(animationId)
-	PlayAnimation(animationId)
-end)
-
---[[
-    Code execution
-]]

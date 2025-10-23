@@ -10,14 +10,14 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
     Naming convention: ???
 ]]
 
-local Communication = require(ReplicatedStorage.Modules.Communication)
+local Behaviors = {}
 
 --[[
     Tables
     Naming convention: ???
 ]]
 
-local Behaviors = require(ReplicatedStorage.Assets.Behaviors)
+Behaviors = { Push = require(ReplicatedStorage.Assets.Push) }
 
 --[[
     References & Parameters
@@ -36,10 +36,7 @@ local Behaviors = require(ReplicatedStorage.Assets.Behaviors)
     Conventional order: Remote events -> Bindable events -> Remote functions -> Bindable functions
 ]]
 
-Communication.OnServerEvent("Push", function(attacker, receivers)
-	Behaviors["Push"]:DoDamage(attacker, receivers)
-end)
-
 --[[
     Code execution
 ]]
+return Behaviors

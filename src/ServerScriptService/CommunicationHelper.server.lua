@@ -19,8 +19,7 @@ local Communication = require(ReplicatedStorage.Modules.Communication)
 
 local BindableEvents = {
 	"PlayBtnActivated",
-	"GlobalAnimation",
-	"LocalAnimation",
+	"Attack",
 }
 
 local RemoteEvents = {}

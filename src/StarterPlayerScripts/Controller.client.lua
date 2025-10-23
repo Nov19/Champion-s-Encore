@@ -132,14 +132,14 @@ local function Attack(actionName, inputState, inputObject)
 
 		if now - lastAttackTime >= ATTACK_CD then
 			lastAttackTime = now
-			Communication.Fire("GlobalAnimation", actionName)
+			Communication.Fire("Attack")
 		end
 
 		task.spawn(function()
 			while isAttacking do
 				if os.clock() - lastAttackTime >= ATTACK_CD then
 					lastAttackTime = os.clock()
-					Communication.Fire("GlobalAnimation", actionName)
+					Communication.Fire("Attack")
 				end
 				task.wait(0.05)
 			end

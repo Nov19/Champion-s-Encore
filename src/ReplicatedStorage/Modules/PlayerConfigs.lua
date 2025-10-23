@@ -3,21 +3,28 @@
     Naming convention: ???
 ]]
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 --[[
     Modules
     Naming convention: ???
 ]]
 
-local Communication = require(ReplicatedStorage.Modules.Communication)
+local PlayerConfig = {}
 
 --[[
     Tables
     Naming convention: ???
 ]]
 
-local Behaviors = require(ReplicatedStorage.Assets.Behaviors)
+PlayerConfig.Default = {
+	MaxHealth = 100,
+	AttackPower = 20,
+	Animations = {
+		Attack = "Push",
+	},
+	Cooldowns = {
+		Push = 1.0,
+	},
+}
 
 --[[
     References & Parameters
@@ -31,15 +38,21 @@ local Behaviors = require(ReplicatedStorage.Assets.Behaviors)
     Functions
 ]]
 
+function PlayerConfig:GetConfigFor(player)
+	local config = table.clone(self.Default)
+
+	-- TODO Get the saved configs from DataStore
+
+	return config
+end
+
 --[[
     Event connections
     Conventional order: Remote events -> Bindable events -> Remote functions -> Bindable functions
 ]]
 
-Communication.OnServerEvent("Push", function(attacker, receivers)
-	Behaviors["Push"]:DoDamage(attacker, receivers)
-end)
-
 --[[
     Code execution
 ]]
+
+return PlayerConfig
