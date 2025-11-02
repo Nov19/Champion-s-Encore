@@ -77,7 +77,7 @@ local function PushCharacter(targetCharacter: Model, direction: Vector3, force: 
 	end)
 	if ok and knockTrack then
 		targetCharacter.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-		knockTrack.Priority = Enum.AnimationPriority.Action2
+		knockTrack.Priority = Enum.AnimationPriority.Action
 		knockTrack.Looped = false
 		knockTrack:Play()
 		-- Ensure the animation stops when knockback duration ends
