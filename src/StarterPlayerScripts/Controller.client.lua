@@ -125,7 +125,7 @@ local function InitializeController()
 end
 
 local function Attack(actionName, inputState, inputObject)
-	-- TODO Change this to a press and release action. Exp: pressed -> while loop
+	-- Change this to a press and release action. Exp: pressed -> while loop
 	if inputState == Enum.UserInputState.Begin then
 		isAttacking = true
 		local now = os.clock()
@@ -157,7 +157,7 @@ end
     Conventional order: Remote events -> Bindable events -> Remote functions -> Bindable functions
 ]]
 
--- TODO: Lock on to the target
+-- Lock on to the target
 UIReferences.TouchControllerUI.LockOnBtn.Activated:Connect(function()
 	if isLockingOn then
 		isLockingOn = false

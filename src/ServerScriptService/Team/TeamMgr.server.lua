@@ -30,6 +30,8 @@ local TEAM_CHOICE_TIMEOUT = ServerConfigs.TEAM_CHOICE_TIMEOUT.Value -- 30 second
 local playerTeamChoices = {} -- Stores player team choices
 local isCollectingTeamChoices = false
 local isStartARunExecuting = false -- Tracks if StartARun is currently executing
+local activeRunId = nil
+local runIdCounter = 0
 
 -- Event names for communication
 local TEAM_CHOICE_REQUEST = "TeamChoiceRequest"
@@ -173,10 +175,11 @@ end
 
 -- Invoke StartARun BindableFunction and wait for completion
 function InvokeStartARun()
-	print("Starting StartARun...")
-
-	Communication.Invoke("StartARun")
-
+	-- Generate a new run ID
+	runIdCounter = runIdCounter + 1
+	activeRunId = runIdCounter
+	print("Starting StartARun with ID:", activeRunId)
+	Communication.Invoke("StartARun", activeRunId)
 	print("StartARun finished")
 end
 
@@ -198,12 +201,14 @@ end
 -- Handle game completion and start new team collection cycle
 function OnGameCompleted()
 	print("Game completed! Starting new team collection cycle...")
+	-- Signal to stop the current run
+	activeRunId = nil
 
 	-- Start the team collection process
 	RequestTeamChoices()
 
 	-- Invoke StartARun BindableFunction after team processing is complete
-	InvokeStartARun() -- FIXME Only one run started...
+	InvokeStartARun()
 end
 
 --[[

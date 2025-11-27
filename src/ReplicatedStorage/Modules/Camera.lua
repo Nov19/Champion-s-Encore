@@ -138,11 +138,14 @@ function CM:GetClosestTarget(isFindingClosestTarget, camera)
 		local closestDistance = math.huge
 		for _, target in targets do
 			local vector, onScreen = camera:WorldToScreenPoint(target.Position)
+			local screenPoint = Vector2.new(vector.X, vector.Y)
 			if onScreen then
-				local currentDistance = (Vector2.new(vector.X, vector.Y) - Vector2.new(
-					target.Position.X,
-					target.Position.Y
-				)).Magnitude
+				-- Calculate viewport center coordinates (in screen space)
+				local viewportSize = workspace.CurrentCamera.ViewportSize
+				local viewportCenter = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
+
+				-- Now we're comparing screen coordinates with screen coordinates
+				local currentDistance = (screenPoint - viewportCenter).Magnitude
 				if currentDistance < closestDistance then
 					closestDistance = currentDistance
 					closestTarget = target

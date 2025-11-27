@@ -28,7 +28,7 @@ local DEFAULT_BLUR_SIZE = 36
 local DEFAULT_BLUR_TWEEN_INFO = TweenInfo.new(1.3, Enum.EasingStyle.Linear)
 
 local currentCamera = workspace.CurrentCamera
-local startMenuCameraCFrame = workspace:WaitForChild("StartMenuCameraPart").CFrame
+local startMenuCameraCFrame = workspace.Terrains:WaitForChild("StartMenuCameraPart").CFrame
 
 --[[
     Local functions

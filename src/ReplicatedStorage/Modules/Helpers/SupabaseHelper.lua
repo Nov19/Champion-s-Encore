@@ -46,7 +46,7 @@ local BASE_URL = "https://your-database-api.com" -- Update this URL to your actu
 ---@return table?
 local function RequestProccess(functionName, method, data)
 	local response
-	local success, err = pcall(function()
+	local requestSuccess, err = pcall(function()
 		local httpResponse = HttpService:RequestAsync({
 			Url = DATABASE_URL .. functionName,
 			Method = method,
@@ -57,18 +57,14 @@ local function RequestProccess(functionName, method, data)
 		response = httpResponse
 	end)
 
-	if success then
-		if response and response.Body and response.Body ~= "" then
-			return HttpService:JSONDecode(response.Body)
-		else
-			warn("Error: Request succeeded but no response received")
-			return nil
-		end
+	if requestSuccess and response.Success and response.Body then
+		return HttpService:JSONDecode(response.Body)
 	else
-		warn("❌ Error:", err)
+		warn("❌ Request error:", err)
 		if response then
-			warn("❌ Status Code:", response.StatusCode)
-			warn("❌ Response Body:", response.Body)
+			warn("❌ Response Status Code:", response.StatusCode)
+			warn("❌ Response Body:", HttpService:JSONDecode(response.Body))
+			warn("❌ TraceBack Info:", debug.traceback("Debug level 2", 2))
 		end
 		return nil
 	end
@@ -81,16 +77,46 @@ end
 SH.Functions = {
 	--- This function is used to update the player profile in the Supabase database.
 	---@param playerId string The ID of the player.
-	---@param playerName string The name of the player.
+	---@param uniqueID string The player unique ID that is set when the account is created.
+	---@param displayName string The name of the player.
 	---@param level number The level of the player.
 	---@param exp number The experience of the player.
 	---@return table
-	UpdatePlayerProfile = function(playerId, playerName, level, exp)
+	UpdatePlayerProfile = function(playerId, uniqueID, displayName, level, exp)
+		local result = RequestProccess("playerupdateprofile", "POST", {
+			p_player_id = playerId,
+			p_player_username = uniqueID,
+			p_player_display_name = displayName,
+			p_level = level,
+			p_exp = exp,
+		})
+		if result then
+			return result
+		end
+	end,
+
+	--- This function fetch the player's profile
+	---@param playerId number The player ID.
+	---@param uniqueID string The player unique ID that is set when the account is created.
+	---@param displayName string The name that players can change in their settings.
+	---@return any
+	GetPlayerProfile = function(playerId, uniqueID, displayName)
 		local result = RequestProccess(
-			"playerupdateprofile",
+			"getplayerprofile",
 			"POST",
-			{ p_player_id = playerId, p_player_name = playerName, p_level = level, p_exp = exp }
+			{ p_player_id = playerId, p_player_username = uniqueID, p_player_display_name = displayName }
 		)
+		if result then
+			return result
+		end
+	end,
+
+	GetTopPlayersDynamic = function(orderBy, limit)
+		local result = RequestProccess("gettopplayersdynamic", "POST", {
+			p_order_by = orderBy,
+			p_limit = limit,
+		})
+
 		if result then
 			return result
 		end
@@ -100,4 +126,4 @@ SH.Functions = {
 --[[
     Code execution
 ]]
-return HttpService
+return SH

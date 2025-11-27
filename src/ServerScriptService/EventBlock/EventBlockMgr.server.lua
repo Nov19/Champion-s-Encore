@@ -144,11 +144,17 @@ end
 ]]
 
 -- Once the game manager invoke this function, it runs after a player won the game.
-Communication.OnInvoke("StartARun", function()
+Communication.OnInvoke("StartARun", function(runId)
 	-- Number of event blocks to target this cycle
 	local currentBlockCount = INITIAL_TRIGGERED_EVENT_BLOCKS
 
 	while true do -- run until a player wins...
+		-- Check if this run should terminate
+		if Communication.Invoke("IsRunActive", runId) == false then
+			print("Run terminated:", runId)
+			break
+		end
+
 		-- 1) Get the event blocks
 		local blocks = GetRandomEventBlocks(currentBlockCount)
 
