@@ -128,23 +128,15 @@ function RankService.GetTopExpPlayers(limit)
 		return RankCache[cacheKey]
 	end
 
-	local data
-	local timeoutReached = false
-	local done = Instance.new("BindableEvent")
-
-	task.spawn(function()
-		-- If cache is invalid or doesn't exist, fetch from Supabase with error handling
-		local success, res = pcall(function()
-			return SupabaseHelper.Functions.GetTopPlayersDynamic("exp", limit or 50)
-		end)
-
-		if success then
-			data = res.data
-		else
-			warn("[RankService] Error fetching top players from Supabase: " .. tostring(res))
-			return nil
-		end
+	-- If cache is invalid or doesn't exist, fetch from Supabase with error handling
+	local success, data = pcall(function()
+		return SupabaseHelper.Functions.GetTopPlayersDynamic("exp", limit or 50)
 	end)
+
+	if not success then
+		warn("[RankService] Error fetching top players from Supabase: " .. tostring(data))
+		return nil
+	end
 
 	-- Validate returned data
 	if not data then
