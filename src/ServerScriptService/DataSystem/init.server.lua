@@ -27,7 +27,7 @@ local RankService = require(script.RankService)
 
 local SHUT_DOWN_DELAY = 5
 local RANK_UPDATE_INTERVAL = 30
-local SYNC_DATABASE_INTERVAL = 60
+local SYNC_DATABASE_INTERVAL = 10
 
 local rankEntry = ReplicatedStorage.Prefabs.UIComponents.Rank:WaitForChild("Prefab_RankEntry")
 local levelRankSF = ObjectHelper.WaitForPath(workspace, "Boards.ExpRank.Board.SurfaceGui.MainFrame.ScrollingFrame")
@@ -133,6 +133,13 @@ task.spawn(function()
 		local onlinePlayer = Players:GetPlayers()
 
 		-- Send all the players' info at once
+		for _, player in onlinePlayer do
+			ProfileService.UpdatePlayerProfile(
+				player,
+				player.leaderstats["Lv."].Value,
+				player.leaderstats["Exp."].Value
+			)
+		end
 
 		task.wait(SYNC_DATABASE_INTERVAL)
 	end
