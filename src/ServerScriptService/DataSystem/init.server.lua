@@ -99,7 +99,7 @@ Players.PlayerAdded:Connect(function(player)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
-	ProfileService.UpdatePlayerProfile(player)
+	ProfileService.UpdatePlayerProfile(player, player.leaderstats["Lv."].Value, player.leaderstats["Exp."].Value)
 end)
 
 --[[
