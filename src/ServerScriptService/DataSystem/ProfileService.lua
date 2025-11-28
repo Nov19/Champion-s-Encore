@@ -38,13 +38,20 @@ local ICON_CACHE_EXPIRATION_TIME = 300 -- 5 mins
     Functions
 ]]
 
---- This function is used to update the player profile in the Supabase database.
----@param player Player The player
----@param level number The level of the player.
----@param exp number The experience of the player.
----@return table
+--- This function is used to update the player profile in the Supabase database using batch processing.
+---@param player Player The player object
+---@param level number The level of the player
+---@param exp number The experience of the player
+---@return table|nil Returns the updated player profile data or nil if the update fails
 function ProfileService.UpdatePlayerProfile(player, level, exp)
-	SupabaseHelper.Functions.UpdatePlayerProfile(player.UserId, player.Name, player.DisplayName, level, exp)
+	local playerData = {
+		playerId = player.UserId,
+		uniqueID = player.Name,
+		displayName = player.DisplayName,
+		level = level,
+		exp = exp,
+	}
+	return SupabaseHelper.Functions.UpdatePlayerProfile(playerData)
 end
 
 --- This function is used to get the player profile from the Supabase database.
