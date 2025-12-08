@@ -22,7 +22,11 @@ local BindableEvents = {
 	"Attack",
 }
 
-local RemoteEvents = {}
+local RemoteEvents = {
+	"WelcomeMessage",
+	"CanSendGreeting",
+	"Greeting",
+}
 
 local RemoteFunctions = {}
 

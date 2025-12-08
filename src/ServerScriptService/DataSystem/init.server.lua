@@ -132,6 +132,8 @@ task.spawn(function()
 	while true do
 		local onlinePlayer = Players:GetPlayers()
 
+		-- FUTURE If any additional data needs to be synced, add it here.
+
 		-- Send all the players' info at once
 		for _, player in onlinePlayer do
 			ProfileService.UpdatePlayerProfile(
