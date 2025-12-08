@@ -155,6 +155,55 @@ function RankService.GetTopExpPlayers(limit)
 	return data
 end
 
+--- Get the top players ordered by level
+---@param limit number The number of players you want to retrieve. By default, it is 50.
+---@return table|nil The top players data or nil if an error occurs
+function RankService.GetTopLevelPlayers(limit)
+	-- Validate limit parameter
+	if limit and type(limit) ~= "number" then
+		warn("[RankService] Invalid limit parameter type in GetTopLevelPlayers. Must be a number.")
+		return nil
+	end
+
+	if limit and (limit < 1 or limit > 1000) then
+		warn("[RankService] Limit value out of reasonable range (1-1000) in GetTopLevelPlayers")
+		return nil
+	end
+
+	local cacheKey = getCacheKey("level", limit)
+
+	-- Check if cache is valid
+	if isCacheValid(cacheKey) and RankCache[cacheKey] then
+		return RankCache[cacheKey]
+	end
+
+	-- If cache is invalid or doesn't exist, fetch from Supabase with error handling
+	local success, data = pcall(function()
+		return SupabaseHelper.Functions.GetTopPlayersDynamic("level", limit or 50)
+	end)
+
+	if not success then
+		warn("[RankService] Error fetching top players from Supabase: " .. tostring(data))
+		return nil
+	end
+
+	-- Validate returned data
+	if not data then
+		warn("[RankService] No data returned from Supabase in GetTopLevelPlayers")
+		return nil
+	end
+
+	if type(data) ~= "table" then
+		warn("[RankService] Invalid data type returned from Supabase in GetTopLevelPlayers")
+		return nil
+	end
+
+	-- Update cache with new data
+	updateCache(cacheKey, data)
+
+	return data
+end
+
 --- Clear a specific cache entry by rank type and limit
 ---@param rankType string The type of rank to clear (e.g., "exp")
 ---@param limit number Optional: The specific limit to clear. If not provided, clears all caches for this rank type.
