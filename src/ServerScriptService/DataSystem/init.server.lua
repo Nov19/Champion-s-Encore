@@ -51,7 +51,7 @@ local function LevelRankDecode(infoList: table)
 
 	-- Clear the current entries on the board
 	for _, entry in levelRankSF:GetChildren() do
-		if entry:IsA("Frame") then
+		if entry:IsA("Frame") or entry:IsA("CanvasGroup") then
 			entry:Destroy()
 		end
 	end
@@ -120,7 +120,7 @@ end)
 -- The loop to update the board of the rank
 task.spawn(function()
 	while true do
-		local topPlayers = RankService.GetTopExpPlayers()
+		local topPlayers = RankService.GetTopLevelPlayers()
 		LevelRankDecode(topPlayers)
 
 		task.wait(RANK_UPDATE_INTERVAL)
