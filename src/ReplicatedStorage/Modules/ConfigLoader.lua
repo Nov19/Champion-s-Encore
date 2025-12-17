@@ -167,8 +167,20 @@ function ConfigLoader:RemapConfigs(configs, value)
 			return nil
 		end
 
-		remappedConfigs[config[value]] = config
+		local key = config[value]
+		if not remappedConfigs[key] then
+			remappedConfigs[key] = {}
+		end
+		table.insert(remappedConfigs[key], config)
 	end
+
+	-- Convert single-value arrays back to direct key-value pairs
+	for key, configsArray in pairs(remappedConfigs) do
+		if #configsArray == 1 then
+			remappedConfigs[key] = configsArray[1]
+		end
+	end
+
 	return remappedConfigs
 end
 
