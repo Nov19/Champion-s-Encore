@@ -91,7 +91,10 @@ end
 ]]
 
 Players.PlayerAdded:Connect(function(player)
-	local profile = ProfileService.GetPlayerProfile(player)
+	local profile = nil
+	repeat
+		profile = ProfileService.GetPlayerProfile(player)
+	until profile
 
 	-- Add the corresponding entries to leaderstats
 	ProfileService.AddEntryToLeaderStats(player, "Exp.", profile.exp)
@@ -136,6 +139,11 @@ task.spawn(function()
 
 		-- Send all the players' info at once
 		for _, player in onlinePlayer do
+			if player.leaderstats == nil then
+				warn(`DataSystem - Player {player.Name} ({player.UserId}) doesn't have leaderstats!`)
+				continue -- Skip if the player doesn't have leaderstats
+			end
+
 			ProfileService.UpdatePlayerProfile(
 				player,
 				player.leaderstats["Lv."].Value,
