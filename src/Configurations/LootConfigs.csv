@@ -1,53 +1,63 @@
-number,string,number,number,number,number
-编号,名称,价值,稀有度,重量,占据空间
-LootId,Name,Price,Rarity,Weight,Space
-1,Iron Bolt,20,1,50,2
-2,Leather Strap,15,1,30,3
-3,Copper Wire,30,1,20,1
-4,Wooden Gear,40,1,100,5
-5,Basic Circuit Board,50,1,80,4
-6,Steel Nut,10,1,25,1
-7,Plastic Tube,15,1,40,3
-8,Aluminum Sheet,45,1,200,8
-9,Rubber Gasket,10,1,15,1
-10,Glass Lens,35,1,60,2
-11,Steel Bolt,50,2,75,2
-12,Reinforced Leather Strap,40,2,50,4
-13,Insulated Copper Wire,70,2,40,2
-14,Brass Gear,90,2,150,6
-15,Advanced Circuit Board,120,2,120,5
-16,Titanium Nut,30,2,15,1
-17,Metal Pipe,60,2,300,10
-18,Carbon Fiber Sheet,150,2,150,7
-19,Silicone Gasket,35,2,25,1
-20,Optical Lens,100,2,90,3
-21,Hardened Steel Bolt,120,3,100,3
-22,Dragonhide Strap,100,3,70,5
-23,Gold-Plated Wire,180,3,60,2
-24,Enchanted Gear,220,3,200,7
-25,Expert Circuit Board,300,3,160,6
-26,Adamantine Nut,80,3,35,2
-27,Reinforced Metal Pipe,150,3,400,12
-28,Titanium Alloy Sheet,350,3,250,9
-29,Magnetic Gasket,90,3,45,2
-30,Advanced Optical Lens,250,3,120,4
-31,Mythril Bolt,350,4,85,3
-32,Phantom Leather Strap,280,4,45,4
-33,Arcane Wire,450,4,50,2
-34,Clockwork Gear,500,4,250,8
-35,Mystic Circuit Board,750,4,200,7
-36,Starsteel Nut,220,4,40,2
-37,Runic Metal Pipe,400,4,500,14
-38,Adamantine Alloy Sheet,900,4,300,10
-39,Elemental Gasket,250,4,60,3
-40,Celestial Lens,600,4,150,5
-41,Legendary Orichalcum Bolt,800,5,120,4
-42,Divine Leather Strap,650,5,60,5
-43,Cosmic Wire,1200,5,40,2
-44,Chronos Gear,1500,5,300,10
-45,Ethereal Circuit Board,2000,5,180,8
-46,Astral Nut,550,5,50,3
-47,Infinity Metal Pipe,1000,5,600,15
-48,Stellar Alloy Sheet,2200,5,350,12
-49,Primordial Gasket,700,5,80,4
-50,Godly Lens,1500,5,200,6
+number,string,number,number,number,number,number
+编号,名称,价值,稀有度,重量,占据空间,加载时间
+LootId,Name,Price,Rarity,Weight,Space,LoadTime
+1,Iron Bolt,20,1,50,2,0.6
+2,Leather Strap,15,1,30,3,0.6
+3,Copper Wire,30,1,20,1,0.6
+4,Wooden Gear,40,1,100,5,0.6
+5,Basic Circuit Board,50,1,80,4,0.6
+6,Steel Nut,10,1,25,1,0.6
+7,Plastic Tube,15,1,40,3,0.6
+8,Aluminum Sheet,45,1,200,8,0.6
+9,Rubber Gasket,10,1,15,1,0.6
+10,Glass Lens,35,1,60,2,0.6
+11,Steel Bolt,50,2,75,2,0.85
+12,Reinforced Leather Strap,40,2,50,4,0.85
+13,Insulated Copper Wire,70,2,40,2,0.85
+14,Brass Gear,90,2,150,6,0.85
+15,Advanced Circuit Board,120,2,120,5,0.85
+16,Titanium Nut,30,2,15,1,0.85
+17,Metal Pipe,60,2,300,10,0.85
+18,Carbon Fiber Sheet,150,2,150,7,0.85
+19,Silicone Gasket,35,2,25,1,0.85
+20,Optical Lens,100,2,90,3,0.85
+21,Hardened Steel Bolt,120,3,100,3,1.15
+22,Dragonhide Strap,100,3,70,5,1.15
+23,Gold-Plated Wire,180,3,60,2,1.15
+24,Enchanted Gear,220,3,200,7,1.15
+25,Expert Circuit Board,300,3,160,6,1.15
+26,Adamantine Nut,80,3,35,2,1.15
+27,Reinforced Metal Pipe,150,3,400,12,1.15
+28,Titanium Alloy Sheet,350,3,250,9,1.15
+29,Magnetic Gasket,90,3,45,2,1.15
+30,Advanced Optical Lens,250,3,120,4,1.15
+31,Mythril Bolt,350,4,85,3,1.45
+32,Phantom Leather Strap,280,4,45,4,1.45
+33,Arcane Wire,450,4,50,2,1.45
+34,Clockwork Gear,500,4,250,8,1.45
+35,Mystic Circuit Board,750,4,200,7,1.45
+36,Starsteel Nut,220,4,40,2,1.45
+37,Runic Metal Pipe,400,4,500,14,1.45
+38,Adamantine Alloy Sheet,900,4,300,10,1.45
+39,Elemental Gasket,250,4,60,3,1.45
+40,Celestial Lens,600,4,150,5,1.45
+41,Legendary Orichalcum Bolt,800,5,120,4,2
+42,Divine Leather Strap,650,5,60,5,2
+43,Cosmic Wire,1200,5,40,2,2
+44,Chronos Gear,1500,5,300,10,2
+45,Ethereal Circuit Board,2000,5,180,8,2
+46,Astral Nut,550,5,50,3,2
+47,Infinity Metal Pipe,1000,5,600,15,2
+48,Stellar Alloy Sheet,2200,5,350,12,2
+49,Primordial Gasket,700,5,80,4,2
+50,Godly Lens,1500,5,200,6,2
+51,Mythical Void Bolt,5000,6,100,3,2.35
+52,Chaos Leather Strap,4000,6,50,4,2.35
+53,Quantum Wire,8000,6,30,1,2.35
+54,Celestial Gear,10000,6,250,8,2.35
+55,Omni Circuit Board,15000,6,150,6,2.35
+56,Aetherial Nut,3000,6,25,1,2.35
+57,Dimension Metal Pipe,7000,6,450,12,2.35
+58,Quantum Alloy Sheet,20000,6,200,10,2.35
+59,Primal Gasket,5000,6,40,2,2.35
+60,Omniscient Lens,12000,6,100,4,2.35
