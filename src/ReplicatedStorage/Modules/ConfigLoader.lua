@@ -72,7 +72,7 @@ local function initializeOnce()
 		-- Ensure server cache is built eagerly so first client gets immediate response
 		loadAllServerConfigs()
 		-- RemoteFunction for clients to request configs
-		Communication.OnServerInvoke(REQUEST_EVENT_NAME, function(player)
+		Communication.OnServerInvoke(REQUEST_EVENT_NAME, function()
 			-- Defensive: reload only if cache missing
 			if serverConfigsCache == nil then
 				loadAllServerConfigs()
