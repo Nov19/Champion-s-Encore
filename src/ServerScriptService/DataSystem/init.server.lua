@@ -28,6 +28,7 @@ local RankService = require(script.RankService)
 local SHUT_DOWN_DELAY = 5
 local RANK_UPDATE_INTERVAL = 30
 local SYNC_DATABASE_INTERVAL = 10
+local MAX_RETRIES = 3
 
 local rankEntry = ReplicatedStorage.Prefabs.UIComponents.Rank:WaitForChild("Prefab_RankEntry")
 local levelRankSF = ObjectHelper.WaitForPath(workspace, "Boards.ExpRank.Board.SurfaceGui.MainFrame.ScrollingFrame")
@@ -92,9 +93,23 @@ end
 
 Players.PlayerAdded:Connect(function(player)
 	local profile = nil
-	repeat
+	local retries = 0
+	local delay = 0.1
+
+	while retries < MAX_RETRIES and not profile do
 		profile = ProfileService.GetPlayerProfile(player)
-	until profile
+		task.wait(delay)
+		retries += 1
+		delay *= 2 -- Exponential backoff
+	end
+
+	if not profile then
+		warn(`DataSystem - Failed to load profile for player {player.Name} ({player.UserId}) after {retries} retries.`)
+
+		-- TODO Add a warning message to the player. And teleport the player to another game server.
+
+		return
+	end
 
 	-- Add the corresponding entries to leaderstats
 	ProfileService.AddEntryToLeaderStats(player, "Exp.", profile.exp)
