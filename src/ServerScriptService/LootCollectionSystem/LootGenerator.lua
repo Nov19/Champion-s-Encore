@@ -11,8 +11,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 ]]
 
 local ConfigLoader = require(ReplicatedStorage.Modules.ConfigLoader)
+local IdGenerateHelper = require(ReplicatedStorage.Modules.Helpers.IdGenerateHelper)
 
-local Loot = {}
+local LootGenerator = {}
 
 --[[
     Tables
@@ -29,8 +30,7 @@ local Possibility_To_Rarity = {
 	[5] = 0.995, -- Legendary: 1.5%
 	[6] = 1.0, -- Mythical: 0.5%
 }
-
-Loot.Rarity_Levels = {
+LootGenerator.Rarity_Levels = {
 	Common = {
 		Weight = 1,
 		Color = Color3.fromRGB(255, 255, 255),
@@ -61,26 +61,9 @@ Loot.Rarity_Levels = {
     References & Parameters
 ]]
 
--- Pre-cache CHARSET length for faster access
-local CHAR_SET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-local CHAR_SET_LENGTH = #CHAR_SET
-local ID_LENGTH = 12
-
 --[[
     Local functions
 ]]
-
---- Generate a temporary ID for the LootBox
----@return string
-local function GenerateTempId()
-	local result = table.create(ID_LENGTH)
-	for i = 1, ID_LENGTH do
-		-- Use bit32.band for faster random range (if available)
-		local index = math.random(1, CHAR_SET_LENGTH)
-		result[i] = string.sub(CHAR_SET, index, index) -- string.sub is slightly faster than :sub()
-	end
-	return table.concat(result)
-end
 
 --- Generate a random rarity based on the Possibility_To_Rarity table
 ---@return number
@@ -109,8 +92,8 @@ end
 --- Generate a Loot object
 ---@param boxId string The ID of the LootBox
 ---@return table
-function Loot.GenerateLoot(boxId: string)
-	local tempId = boxId .. "-" .. GenerateTempId() .. "-" .. os.clock()
+function LootGenerator.GenerateLoot(boxId: string)
+	local tempId = boxId .. "-" .. IdGenerateHelper.GenerateTempId() .. "-" .. os.clock()
 	local rarity = GenerateRandomRarity()
 	local lootPool = Rarity_To_Loots[rarity]
 	local loot
@@ -146,6 +129,6 @@ end
 table.freeze(Loot_Configs)
 table.freeze(Rarity_To_Loots)
 table.freeze(Possibility_To_Rarity)
-table.freeze(Loot.Rarity_Levels)
+table.freeze(LootGenerator.Rarity_Levels)
 
-return Loot
+return LootGenerator
