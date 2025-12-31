@@ -3,16 +3,12 @@
     Naming convention: ???
 ]]
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 --[[
     Modules
     Naming convention: ???
 ]]
 
-local Loot = require(script.Loot)
-local LootBox = require(script.LootBox)
-local LootSpawner = require(script.LootSpawner)
+local LootBoxManager = require(script.LootBoxManager)
 
 --[[
     Tables
@@ -39,3 +35,5 @@ local LootSpawner = require(script.LootSpawner)
 --[[
     Code execution
 ]]
+
+LootBoxManager.SpawnLootBox(LootBoxManager.Spawn_Points[math.random(1, #LootBoxManager.Spawn_Points)])

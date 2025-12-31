@@ -11,6 +11,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 ]]
 
 local Communication = require(ReplicatedStorage.Modules.Communication)
+local IdGenerateHelper = require(ReplicatedStorage.Modules.Helpers.IdGenerateHelper)
+local LootGenerator = require(script.Parent.LootGenerator)
 
 local LootBox = {}
 LootBox.__index = LootBox
@@ -19,6 +21,16 @@ LootBox.__index = LootBox
     Tables
     Naming convention: ???
 ]]
+
+local Possibility_To_Item_Counts = {
+	[1] = 0.48,
+	[2] = 0.76,
+	[3] = 0.91,
+	[4] = 0.98,
+	[5] = 0.995,
+	[6] = 0.999,
+	[7] = 1.0,
+}
 
 LootBox.Snapshot = {
 	boxID = "BOX_",
@@ -45,10 +57,43 @@ local openedLootBoxModel = ReplicatedStorage.Prefabs.LootBoxes:WaitForChild("Ope
     Local functions
 ]]
 
+--- Generate a random rarity based on the Possibility_To_Rarity table
+---@return number
+local function GenerateCountsWithPossibility()
+	local p = Possibility_To_Item_Counts
+	local r = math.random()
+	if r <= p[1] then
+		return 1
+	elseif r <= p[2] then
+		return 2
+	elseif r <= p[3] then
+		return 3
+	elseif r <= p[4] then
+		return 4
+	elseif r <= p[5] then
+		return 5
+	elseif r <= p[6] then
+		return 6
+	else
+		return 7
+	end
+end
+
 local function GenerateLoot()
 	local loot = {}
 
-	warn("GenerateLoot - Not implemented yet")
+	local counts = GenerateCountsWithPossibility() -- Generate #loot
+
+	-- Generate the specified number (counts) of loot items
+	for i = 1, counts do
+		local lootItem = LootGenerator.GenerateLoot("box_generated_loot")
+		if lootItem then
+			table.insert(loot, lootItem)
+			print("  Generated loot:", lootItem)
+		else
+			warn("Failed to generate loot item " .. i)
+		end
+	end
 
 	return loot
 end
@@ -58,21 +103,18 @@ end
 ]]
 
 --- Create a new LootBox object
----@param spawnPoint BasePart The spawn point for the LootBox
----@param lootType string The type of loot to be contained in the LootBox
----@param rarity string The rarity of the LootBox
----@return table
-function LootBox.new(spawnPoint: BasePart, lootType: string, rarity: string, model: Model)
+---@class LootBox
+---@return LootBox
+function LootBox.new(spawnPoint: BasePart, model: Model)
 	local self = setmetatable({}, LootBox)
 
 	self.SpawnPoint = spawnPoint
-	self.LootType = lootType
-	self.Rarity = rarity
 	self.State = LootBox.States.Idle
 	self.Model = model
 	self.SpawnTime = tick()
 	self.DespawnTimer = nil
 	self.ServerConnection = {}
+	self.BoxId = IdGenerateHelper.GenerateTempId() .. "-" .. os.clock()
 	self.Loot = {}
 
 	self:Initialize()
@@ -90,14 +132,18 @@ end
 
 --- Create the model for the LootBox
 function LootBox:CreateModel()
-	local model = self.Model or lootBoxModel:Clone()
+	local model = lootBoxModel:Clone()
+	self.Model = model
 	model.Parent = workspace
 	model:SetPrimaryPartCFrame(self.SpawnPoint.CFrame)
 end
 
 --- Set up interactions for the LootBox
 function LootBox:SetupInteractions()
-	local proximityPrompt = self.Model:WaitForChild("ProximityPrompt")
+	local proximityPrompt = Instance.new("ProximityPrompt")
+	proximityPrompt.Parent = self.Model
+	proximityPrompt.ActionText = "Collect"
+	proximityPrompt.RequiresLineOfSight = false
 	proximityPrompt.Triggered:Connect(function(player: Player)
 		self:Collect(player)
 	end)
@@ -107,15 +153,10 @@ end
 ---@param player Player The player collecting the LootBox
 function LootBox:Collect(player: Player)
 	-- TODO Pop the player's LootBox collection UI
-	Communication.FireClient(player, "OpenLootBoxCollectionUI", self.Loot)
+	Communication.FireClient("OpenLootBoxCollectionUI", player, self.Loot)
 
 	-- TODO Establish a connection between the collection UI and the LootBox collection data on the server
 	-- TODO Store the event connection in a self.ServerConnection[player]
-	self.ServerConnection[player] = task.spawn(function()
-		while true do
-			self:Update(0.16)
-		end
-	end)
 end
 
 --- This function should be called when the player is done collecting the LootBox
@@ -144,14 +185,6 @@ function LootBox:Despawn()
 		self.Model:Destroy()
 		self.Model = nil
 	end
-end
-
-function LootBox:Update(deltaTime: number)
-	Communication.OnClientEvent("CollectLootBox", function()
-		warn("CollectLootBox - Not implemented yet")
-	end)
-
-	task.wait(deltaTime)
 end
 
 --[[
