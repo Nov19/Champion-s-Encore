@@ -42,6 +42,7 @@ UIReference.Guis = {
 	TouchControllerUI = PlayerGui:WaitForChild("TouchControllerUI"),
 	StartMenuUI = PlayerGui:WaitForChild("StartMenuUI"),
 	PCKeyBindingUI = PlayerGui:WaitForChild("PCKeyBindingUI"),
+	LootCollectionUI = PlayerGui:WaitForChild("LootCollectionUI"),
 }
 
 UIReference.TouchControllerUI = {
@@ -58,6 +59,15 @@ UIReference.PCKeyBindingUI = {
 	JumpKeyBind = UIReference.Guis.PCKeyBindingUI:WaitForChild("JumpKeyBind"),
 	AttackKeyBind = UIReference.Guis.PCKeyBindingUI:WaitForChild("AttackKeyBind"),
 	LockOnKeyBind = UIReference.Guis.PCKeyBindingUI:WaitForChild("LockOnKeyBind"),
+}
+
+UIReference.LootCollectionUI = {
+	LootBoxCollectionFrame = UIReference.Guis.LootCollectionUI:WaitForChild("MainFrame"),
+	CloseBtn = UIReference.Guis.LootCollectionUI.MainFrame:WaitForChild("CloseBtn"),
+	CloseBtnHint = UIReference.Guis.LootCollectionUI.MainFrame.CloseBtn.KeyBind,
+	LootContainer = UIReference.Guis.LootCollectionUI.MainFrame
+		:WaitForChild("LootboxDisplay")
+		:WaitForChild("LootboxContent"),
 }
 
 --[[

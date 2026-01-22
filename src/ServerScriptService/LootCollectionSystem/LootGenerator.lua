@@ -90,10 +90,9 @@ end
 ]]
 
 --- Generate a Loot object
----@param boxId string The ID of the LootBox
 ---@return table
-function LootGenerator.GenerateLoot(boxId: string)
-	local tempId = boxId .. "-" .. IdGenerateHelper.GenerateTempId() .. "-" .. os.clock()
+function LootGenerator.GenerateLoot()
+	local tempId = IdGenerateHelper.GenerateTempId() .. "-" .. os.clock()
 	local rarity = GenerateRandomRarity()
 	local lootPool = Rarity_To_Loots[rarity]
 	local loot

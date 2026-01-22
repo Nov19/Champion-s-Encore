@@ -26,6 +26,8 @@ local RemoteEvents = {
 	"WelcomeMessage",
 	"CanSendGreeting",
 	"Greeting",
+	"OpenLootBoxCollectionUI",
+	"DeleteLootFromLootCollectionUI",
 }
 
 local RemoteFunctions = {}

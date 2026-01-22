@@ -124,6 +124,11 @@ local function InitializeController()
 	end
 end
 
+--- Handle the attack action
+---@param actionName string The name of the action
+---@param inputState Enum.UserInputState The state of the input
+---@param inputObject Instance The input object
+---@return Enum.ContextActionResult
 local function Attack(actionName, inputState, inputObject)
 	-- Change this to a press and release action. Exp: pressed -> while loop
 	if inputState == Enum.UserInputState.Begin then
@@ -145,6 +150,7 @@ local function Attack(actionName, inputState, inputObject)
 			end
 		end)
 	end
+
 	if inputState == Enum.UserInputState.End then
 		isAttacking = false
 	end

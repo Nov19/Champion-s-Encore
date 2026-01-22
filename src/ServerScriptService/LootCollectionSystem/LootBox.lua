@@ -79,6 +79,8 @@ local function GenerateCountsWithPossibility()
 	end
 end
 
+--- Generate loot for the LootBox
+---@return table
 local function GenerateLoot()
 	local loot = {}
 
@@ -86,7 +88,7 @@ local function GenerateLoot()
 
 	-- Generate the specified number (counts) of loot items
 	for i = 1, counts do
-		local lootItem = LootGenerator.GenerateLoot("box_generated_loot")
+		local lootItem = LootGenerator.GenerateLoot()
 		if lootItem then
 			table.insert(loot, lootItem)
 			print("  Generated loot:", lootItem)
@@ -96,6 +98,13 @@ local function GenerateLoot()
 	end
 
 	return loot
+end
+
+--- Handle the player collecting the LootBox
+---@param player Player The player collecting the LootBox
+---@param boxId string The ID of the LootBox being collected
+local function OnPlayerCollectLootBox(player: Player, boxId: string)
+	Communication.FireClient("OpenLootBoxCollectionUI", player, boxId)
 end
 
 --[[ 
@@ -113,8 +122,8 @@ function LootBox.new(spawnPoint: BasePart, model: Model)
 	self.Model = model
 	self.SpawnTime = tick()
 	self.DespawnTimer = nil
-	self.ServerConnection = {}
 	self.BoxId = IdGenerateHelper.GenerateTempId() .. "-" .. os.clock()
+	self.Position = self.SpawnPoint.Position
 	self.Loot = {}
 
 	self:Initialize()
@@ -145,27 +154,21 @@ function LootBox:SetupInteractions()
 	proximityPrompt.ActionText = "Collect"
 	proximityPrompt.RequiresLineOfSight = false
 	proximityPrompt.Triggered:Connect(function(player: Player)
-		self:Collect(player)
+		OnPlayerCollectLootBox(player, self.BoxId)
 	end)
 end
 
 --- Collect the LootBox
 ---@param player Player The player collecting the LootBox
-function LootBox:Collect(player: Player)
-	-- TODO Pop the player's LootBox collection UI
-	Communication.FireClient("OpenLootBoxCollectionUI", player, self.Loot)
-
-	-- TODO Establish a connection between the collection UI and the LootBox collection data on the server
-	-- TODO Store the event connection in a self.ServerConnection[player]
-end
+function LootBox:PickUpLoot(player: Player, loot: table) end
 
 --- This function should be called when the player is done collecting the LootBox
 ---@param player Player The player who is done collecting the LootBox
-function LootBox:StopCollecting(player: Player)
-	-- TODO Disconnect the connection between the collection UI and the LootBox collection data on the server
-	if self.ServerConnection[player] then
-		task.cancel(self.ServerConnection[player])
-		self.ServerConnection[player] = nil
+function LootBox:PlaceLoot(player: Player, isToLootBox: boolean)
+	if isToLootBox then
+		-- The loot will be placed back to the LootBox
+	else
+		-- The loot will be dropped to the ground
 	end
 end
 
